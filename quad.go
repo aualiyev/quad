@@ -2,32 +2,82 @@ package piscine
 
 import "github.com/01-edu/z01"
 
-func QuadA(x, y int) {
-	baseQuad(x, y, '0', '-', '|')
+func Quad(x, y int, typeName rune) {
+	switch typeName {
+	case 'A':
+		QuadA(x, y)
+	case 'B':
+		QuadB(x, y)
+	case 'C':
+		QuadC(x, y)
+	case 'D':
+		QuadD(x, y)
+	case 'E':
+		QuadE(x, y)
+	default:
+		QuadA(x, y)
+	}
 }
 
-func baseQuad(row, col int, cornerSym, rowSym, colSym rune) {
-	if row < 0 || col < 0 {
+func QuadA(x, y int) {
+	baseQuad(x, y, 'o', 'o', 'o', 'o', '|', '-')
+}
+
+func QuadB(x, y int) {
+	baseQuad(x, y, '/', '\\', '\\', '/', '*', '*')
+}
+
+func QuadC(x, y int) {
+	baseQuad(x, y, 'A', 'A', 'C', 'C', 'B', 'B')
+}
+
+func QuadD(x, y int) {
+	baseQuad(x, y, 'A', 'C', 'A', 'C', 'B', 'B')
+}
+
+func QuadE(x, y int) {
+	baseQuad(x, y, 'A', 'C', 'C', 'A', 'B', 'B')
+}
+
+func baseQuad(x, y int, cornerTL, cornerTR, cornerBL, cornerBR, sideSym, horizontalSym rune) {
+	if x <= 0 || y <= 0 {
 		return
 	}
-	for c := 0; c < col; c++ {
-		for r := 0; r < row; r++ {
-			isLeft := r == 0
-			isRight := r == row-1
-			isTop := c == 0
-			isBottom := c == col-1
-			isCorner := (isTop && isLeft) || (isTop && isRight) || (isBottom && isLeft) || (isBottom && isRight)
+
+	for vertical := 0; vertical < y; vertical++ {
+		for horizontal := 0; horizontal < x; horizontal++ {
+
+			isTop := vertical == 0
+			isBottom := vertical == y-1
+			isLeft := horizontal == 0
+			isRight := horizontal == x-1
+
+			isCornerTopLeft := isTop && isLeft
+			isCornerTopRight := isTop && isRight
+			isCornerBottomLeft := isBottom && isLeft
+			isConerBottomRight := isBottom && isRight
+			isCorner := isCornerTopLeft || isCornerTopRight || isCornerBottomLeft || isConerBottomRight
 
 			if isCorner {
-				z01.PrintRune(cornerSym)
-			} else if isTop || isBottom {
-				z01.PrintRune(rowSym)
+				if isCornerTopLeft {
+					z01.PrintRune(cornerTL)
+				} else if isCornerTopRight {
+					z01.PrintRune(cornerTR)
+				} else if isCornerBottomLeft {
+					z01.PrintRune(cornerBL)
+				} else if isConerBottomRight {
+					z01.PrintRune(cornerBR)
+				}
 			} else if isLeft || isRight {
-				z01.PrintRune(colSym)
+				z01.PrintRune(sideSym)
+			} else if isTop || isBottom && !isLeft && !isRight {
+				z01.PrintRune(horizontalSym)
 			} else {
 				z01.PrintRune(' ')
 			}
 		}
 		z01.PrintRune('\n')
 	}
+
+	z01.PrintRune('\n')
 }
